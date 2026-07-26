@@ -136,7 +136,7 @@ Mở file `De_So_5.ipynb` trên **VS Code** hoặc **Jupyter Notebook / JupyterL
 
 Hoặc xem trực tiếp trên Google Colab:
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1K9pYV--SGPx2GZxzJHaitBoXe7rwpSwU?usp=sharing)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/13ptl7R3-004uGGPBXaLPsomsKylZyP8T?usp=sharing)
 
 ---
 
@@ -144,7 +144,7 @@ Hoặc xem trực tiếp trên Google Colab:
 
 File báo cáo hoàn chỉnh (18 trang, định dạng LaTeX → PDF) được đặt tại:
 
-📑 [`bao_cao_latex/bao_cao_de5_hoanchinh.pdf`](bao_cao_latex/bao_cao_de5_hoanchinh.pdf)
+📑 [`bao_cao_latex/bao_cao_de_so_5.pdf`](bao_cao_latex/bao_cao_de_so_5.pdf)
 
 **Nội dung báo cáo bao gồm:**
 1. Giới thiệu & Mục tiêu đề tài
