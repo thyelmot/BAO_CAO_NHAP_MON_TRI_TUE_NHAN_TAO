@@ -1,0 +1,286 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper, margin=2cm}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    \Large \textbf{ĐẠI HỌC PHENIKAA} \\
+    \Large \textbf{TRƯỜNG CÔNG NGHỆ THÔNG TIN PHENIKAA} \\
+    \vspace{1.5cm}
+    \includegraphics[width=0.4\textwidth]{logoo.jpg}
+    \vspace{1.5cm} \\
+    \Large \textbf{TÊN HỌC PHẦN: NHẬP MÔN TRÍ TUỆ NHÂN TẠO} \\
+    \vspace{0.5cm}
+    \Large \textbf{TÊN ĐỀ TÀI: CÀI ĐẶT PERCEPTRON VÀ MẠNG NƠ-RON NHIỀU LỚP (MLP) TỪ ĐẦU BẰNG NUMPY} \\
+    \vspace{2cm}
+    \begin{flushleft}
+        \textbf{Giảng viên hướng dẫn:} ThS. Phan Thị Hoài \\
+        \textbf{Sinh viên thực hiện:} 
+        \begin{itemize}
+            \item[] Ngô Quang Thiện - 24102651
+            \item[] Nguyễn Hưng Vũ - 24102769
+        \end{itemize}
+        \textbf{Khoá:} K18 - ICT3 \\
+        \textbf{Lớp tín chỉ:} CSE703041-2-3-25(N02) \\
+        \textbf{Chương trình đào tạo:} Khoa Học Dữ Liệu và Trí Tuệ Nhân Tạo
+    \end{flushleft}
+    \vfill
+    \textbf{Hà Nội, tháng 7 năm 2026}
+\end{titlepage}
+
+% --- KẾT THÚC TRANG BÌA ---
+
+% --- MỤC LỤC ---
+\renewcommand{\contentsname}{\begin{center} MỤC LỤC \end{center}}
+\tableofcontents
+\newpage
+
+% --- DANH MỤC HÌNH ẢNH ---
+\renewcommand{\listfigurename}{\begin{center} DANH MỤC HÌNH ẢNH \end{center}}
+\listoffigures
+\newpage
+
+% --- BẮT ĐẦU NỘI DUNG CHÍNH ---
+
+\chapter{GIỚI THIỆU}
+
+\section{Giới thiệu đề tài}
+Trong những năm gần đây, Trí tuệ nhân tạo (Artificial Intelligence - AI) đã trở thành một trong những lĩnh vực phát triển mạnh mẽ nhất của khoa học máy tính. Một trong những nền tảng quan trọng của AI hiện đại là mạng nơ-ron nhân tạo (Artificial Neural Network - ANN), mô phỏng cách hoạt động của hệ thần kinh sinh học nhằm học và đưa ra quyết định từ dữ liệu.
+
+Trong báo cáo này, nhóm tiến hành xây dựng mô hình Perceptron và Mạng nơ-ron nhiều lớp (Multi-Layer Perceptron - MLP) hoàn toàn bằng thư viện NumPy, không sử dụng các framework học sâu như TensorFlow hay PyTorch. Việc cài đặt từ đầu giúp hiểu rõ cơ chế lan truyền thuận (Forward Propagation), lan truyền ngược (Backpropagation) và quá trình tối ưu hóa tham số.
+
+\section{Mục tiêu đề tài}
+Đề tài nhằm tìm hiểu nguyên lý hoạt động của mạng nơ-ron nhân tạo thông qua việc tự cài đặt Perceptron và mạng nơ-ron nhiều lớp (MLP) hoàn toàn bằng thư viện NumPy, không sử dụng các framework học sâu như TensorFlow hay PyTorch. Bên cạnh đó, đề tài giúp làm rõ quá trình lan truyền thuận (forward propagation), lan truyền ngược (backpropagation) và cơ chế cập nhật trọng số trong quá trình huấn luyện. Cuối cùng, mô hình được đánh giá trên hai bài toán XOR và Iris, đồng thời so sánh hiệu quả của các phương pháp tối ưu SGD, SGD with Momentum và ảnh hưởng của regularization L2 đến khả năng hội tụ và độ chính xác của mô hình.
+
+\section{Công cụ và môi trường thực hiện}
+Đề tài được thực hiện bằng ngôn ngữ lập trình Python nhờ cú pháp đơn giản và hệ sinh thái phong phú trong lĩnh vực khoa học dữ liệu và học máy. Quá trình cài đặt mô hình sử dụng NumPy để thực hiện các phép toán ma trận và xây dựng toàn bộ thuật toán Perceptron, MLP, lan truyền thuận (Forward Propagation) và lan truyền ngược (Backpropagation) từ đầu mà không sử dụng các framework học sâu như TensorFlow hay PyTorch. Ngoài ra, Matplotlib được sử dụng để trực quan hóa quá trình huấn luyện thông qua các đồ thị như hàm mất mát (Loss) và độ chính xác (Accuracy), trong khi Scikit-learn được dùng để tải tập dữ liệu Iris, hỗ trợ chia tập huấn luyện/kiểm thử và đánh giá kết quả mô hình. Toàn bộ mã nguồn được phát triển và thử nghiệm trên môi trường Visual Studio Code giúp thuận tiện cho việc lập trình, kiểm thử và phân tích kết quả thực nghiệm.
+
+\chapter{CƠ SỞ LÝ THUYẾT}
+
+\section{Mạng Perceptron một lớp và Giới hạn phân tách tuyến tính}
+\subsection{Kiến trúc Perceptron}
+Perceptron là mô hình mạng nơ-ron nhân tạo đơn giản nhất. Mô hình này mô phỏng hoạt động của một nơ-ron sinh học bằng cách kết hợp các đầu vào thông qua trọng số và hàm kích hoạt để đưa ra kết quả phân loại. Perceptron có nhiệm vụ tìm một siêu phẳng (hyperplane) nhằm phân tách các lớp dữ liệu và được sử dụng trong các bài toán phân loại nhị phân. Tuy nhiên, mô hình chỉ hoạt động hiệu quả với dữ liệu phân tách tuyến tính và không thể giải quyết các bài toán phi tuyến như XOR.
+
+Một Perceptron gồm ba thành phần chính: lớp đầu vào (Input Layer), trọng số và bias (Weights \& Bias), và hàm kích hoạt (Activation Function). Lớp đầu vào tiếp nhận các đặc trưng của dữ liệu, mỗi đặc trưng được gán một trọng số $w_i$ thể hiện mức độ ảnh hưởng đến kết quả. Giá trị bias $b$ giúp điều chỉnh ngưỡng kích hoạt, tăng tính linh hoạt của mô hình. Tổng có trọng số của các đầu vào sau đó được đưa qua hàm kích hoạt để tạo ra đầu ra cuối cùng, thường là 0 hoặc 1 trong bài toán phân loại nhị phân.
+
+Nguyên lý hoạt động của Perceptron gồm ba bước: (1) nhân các đặc trưng đầu vào với trọng số tương ứng, (2) cộng các giá trị này với bias để tạo tổng có trọng số, và (3) đưa kết quả qua hàm kích hoạt để xác định đầu ra. Trong quá trình huấn luyện, mô hình so sánh kết quả dự đoán với nhãn thực tế và cập nhật trọng số cùng bias khi dự đoán sai. Quá trình này được lặp lại nhiều lần cho đến khi mô hình hội tụ hoặc đạt số vòng lặp tối đa.
+
+\textbf{Công thức toán học:} \\
+Giả sử vector đầu vào của một mẫu dữ liệu là:
+\begin{equation}
+    \mathbf{x} = [x_1, x_2, \dots, x_n]
+\end{equation}
+và vector trọng số tương ứng là:
+\begin{equation}
+    \mathbf{w} = [w_1, w_2, \dots, w_n]
+\end{equation}
+Giá trị đầu vào của nơ-ron được tính theo công thức:
+\begin{equation}
+    z = \sum_{i=1}^n w_i x_i + b
+\end{equation}
+hay viết dưới dạng ma trận:
+\begin{equation}
+    z = \mathbf{w}^T \mathbf{x} + b
+\end{equation}
+Sau đó, đầu ra của Perceptron được xác định thông qua hàm kích hoạt:
+\begin{equation}
+    \hat{y} = f(z)
+\end{equation}
+Trong đó, hàm kích hoạt bước (Step Function) thường được sử dụng:
+\begin{equation}
+    f(z) = \begin{cases} 1, & z \ge 0 \\ 0, & z < 0 \end{cases}
+\end{equation}
+Khi mô hình dự đoán sai, các trọng số và bias được cập nhật theo quy tắc học Perceptron:
+\begin{align}
+    w_i &= w_i + \eta(y - \hat{y})x_i \\
+    b &= b + \eta(y - \hat{y})
+\end{align}
+Trong đó:
+\begin{itemize}
+    \item $y$: nhãn thực tế.
+    \item $\hat{y}$: nhãn dự đoán.
+    \item $\eta$: tốc độ học (learning rate).
+    \item $w_i$: trọng số của đặc trưng thứ $i$.
+    \item $b$: hệ số bias.
+\end{itemize}
+
+\subsection{Giới hạn phân tách tuyến tính (Bài toán XOR)}
+Perceptron là mô hình phân loại tuyến tính, chỉ có khả năng giải quyết các bài toán có dữ liệu phân tách tuyến tính (Linearly Separable), tức là có thể được phân chia hoàn toàn bằng một đường thẳng, mặt phẳng hoặc siêu phẳng. Trong quá trình huấn luyện, Perceptron điều chỉnh trọng số và bias để tìm ranh giới phân tách giữa các lớp dữ liệu. Nếu dữ liệu phân tách tuyến tính, mô hình sẽ hội tụ và phân loại chính xác. Ngược lại, với các bài toán không phân tách tuyến tính, Perceptron không thể tìm được nghiệm phù hợp và sẽ không hội tụ.
+
+Bài toán XOR (Exclusive OR) là một ví dụ kinh điển minh họa cho giới hạn của Perceptron. Hàm XOR cho kết quả bằng 1 khi hai đầu vào khác nhau và bằng 0 khi hai đầu vào giống nhau. \\
+Bảng chân trị của phép toán XOR được thể hiện như sau:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+$x_1$ & $x_2$ & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+Các điểm dữ liệu của XOR được phân bố theo hai đường chéo đối diện, nên không thể phân tách hoàn toàn bằng một đường thẳng. Do đó, XOR là một bài toán không phân tách tuyến tính (Non-linearly Separable) và là ví dụ kinh điển minh họa giới hạn của Perceptron một lớp.
+
+\setcounter{section}{3} % Skip 2.2 and 2.3 as per source numbering
+\section{Lan truyền thuận (Forward Propagation)}
+\subsection{Khái niệm}
+Lan truyền thuận (Forward Propagation) là quá trình truyền dữ liệu từ Input Layer qua các Hidden Layer đến Output Layer để tạo ra kết quả dự đoán của mô hình. Ở mỗi nơ-ron, dữ liệu được nhân với trọng số (Weight), cộng Bias, sau đó đi qua hàm kích hoạt trước khi truyền sang lớp tiếp theo.
+
+\subsection{Nguyên lý hoạt động}
+Quá trình lan truyền thuận gồm các bước: \\
+\textbf{Bước 1:} Nhận vector đầu vào
+\begin{equation}
+    \mathbf{x} = [x_1, x_2, \dots, x_n]
+\end{equation}
+\textbf{Bước 2:} Tính tổng có trọng số
+\begin{equation}
+    z = \mathbf{w}^T \mathbf{x} + b
+\end{equation}
+\textbf{Bước 3:} Áp dụng hàm kích hoạt
+\begin{equation}
+    a = f(z)
+\end{equation}
+Trong đó, $f(\cdot)$ có thể là Sigmoid, ReLU hoặc Softmax tùy từng lớp của mạng. \\
+\textbf{Bước 4:} Đầu ra của lớp hiện tại được truyền sang lớp tiếp theo và lặp lại cho đến Output Layer để tạo ra kết quả dự đoán $\hat{y}$.
+
+\subsection{Công thức tổng quát}
+Đối với lớp thứ $l$ của mạng MLP, quá trình lan truyền thuận được mô tả bởi:
+\begin{align}
+    Z^{(l)} &= W^{(l)} A^{(l-1)} + b^{(l)} \\
+    A^{(l)} &= f\left(Z^{(l)}\right)
+\end{align}
+Trong đó:
+\begin{itemize}
+    \item $A^{(l-1)}$: đầu ra của lớp trước.
+    \item $W^{(l)}$: ma trận trọng số.
+    \item $b^{(l)}$: vector bias.
+    \item $Z^{(l)}$: tổng có trọng số.
+    \item $A^{(l)}$: đầu ra sau khi áp dụng hàm kích hoạt.
+\end{itemize}
+Quá trình này được thực hiện tuần tự qua tất cả các lớp để tạo ra kết quả dự đoán của mạng.
+
+\subsection{Vai trò của Forward Propagation}
+Forward Propagation là bước tạo ra kết quả dự đoán từ dữ liệu đầu vào và là cơ sở để tính hàm mất mát (Loss Function). Giá trị Loss sau đó được sử dụng trong Backpropagation để tính gradient và cập nhật trọng số của mạng. Hai quá trình này phối hợp trong mỗi vòng huấn luyện, giúp mô hình dần học được quy luật của dữ liệu và nâng cao độ chính xác dự đoán.
+
+\section{Hàm mất mát (Loss Function)}
+\subsection{Khái niệm}
+Hàm mất mát (Loss Function) là hàm toán học dùng để đo lường sai lệch giữa giá trị dự đoán và giá trị thực tế. Giá trị Loss càng nhỏ thì mô hình dự đoán càng chính xác. Trong quá trình huấn luyện, Loss được sử dụng làm cơ sở cho Backpropagation để tính gradient và cập nhật trọng số của mạng. Tùy theo bài toán, có thể sử dụng các hàm mất mát khác nhau như Mean Squared Error (MSE) hoặc Cross-Entropy Loss.
+
+\subsection{Mean Squared Error (MSE)}
+Mean Squared Error (MSE) là hàm mất mát thường dùng cho bài toán hồi quy, tính trung bình bình phương sai số giữa giá trị dự đoán và giá trị thực.
+\begin{equation}
+    L = \frac{1}{n} \sum_{i=1}^n (y_i - \hat{y}_i)^2
+\end{equation}
+
+\subsection{Cross-Entropy Loss}
+Cross-Entropy Loss là hàm mất mát phổ biến trong bài toán phân loại, thường kết hợp với Sigmoid hoặc Softmax để đo sự khác biệt giữa xác suất dự đoán và nhãn thực tế.
+\begin{equation}
+    L = - \sum_{i=1}^C y_i \log(\hat{y}_i)
+\end{equation}
+
+\subsection{Vai trò}
+Trong mỗi vòng huấn luyện, mạng nơ-ron thực hiện theo quy trình: \\
+Forward Propagation $\rightarrow$ Loss Function $\rightarrow$ Backpropagation $\rightarrow$ Cập nhật trọng số \\
+Loss Function giúp đánh giá chất lượng dự đoán và cung cấp thông tin để Backpropagation tính gradient, từ đó cập nhật trọng số nhằm giảm sai số qua từng epoch.
+
+\section{Lan truyền ngược (Backpropagation)}
+\subsection{Khái niệm}
+Lan truyền ngược (Backpropagation) là thuật toán dùng để huấn luyện mạng nơ-ron nhiều lớp (MLP). Sau khi Forward Propagation tạo ra kết quả dự đoán và tính Loss, Backpropagation sẽ lan truyền sai số từ Output Layer về Hidden Layer, tính gradient của từng trọng số và bias bằng quy tắc đạo hàm dây chuyền (Chain Rule). Các gradient này được sử dụng để cập nhật tham số của mạng, giúp giảm sai số và cải thiện độ chính xác của mô hình.
+
+\subsection{Quy tắc đạo hàm dây chuyền (Chain Rule)}
+Do đầu ra của mỗi lớp phụ thuộc vào lớp trước, việc tính gradient được thực hiện bằng Chain Rule:
+\begin{equation}
+    \frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}
+\end{equation}
+Quy tắc này cho phép lan truyền sai số từ lớp đầu ra về các lớp trước để xác định mức độ ảnh hưởng của từng trọng số đến Loss.
+
+\subsection{Tính Gradient}
+Gradient là tập hợp các đạo hàm của Loss theo từng trọng số và bias, cho biết hướng và mức độ cần điều chỉnh tham số. \\
+Sai số tại lớp ẩn được tính theo:
+\begin{equation}
+    \delta^{(l)} = (W^{(l+1)})^T \delta^{(l+1)} \odot f'(Z^{(l)})
+\end{equation}
+Gradient của trọng số và bias:
+\begin{align}
+    \frac{\partial L}{\partial W^{(l)}} &= \delta^{(l)} (A^{(l-1)})^T \\
+    \frac{\partial L}{\partial b^{(l)}} &= \delta^{(l)}
+\end{align}
+
+\subsection{Cập nhật trọng số}
+Sau khi tính được gradient, các tham số được cập nhật bằng Gradient Descent:
+\begin{align}
+    W^{(l)} &= W^{(l)} - \eta \frac{\partial L}{\partial W^{(l)}} \\
+    b^{(l)} &= b^{(l)} - \eta \frac{\partial L}{\partial b^{(l)}}
+\end{align}
+Trong đó, $\eta$ là Learning Rate, quyết định tốc độ cập nhật trọng số. Quá trình Forward Propagation $\rightarrow$ Loss Function $\rightarrow$ Backpropagation $\rightarrow$ Cập nhật trọng số được lặp lại qua nhiều epoch cho đến khi mô hình hội tụ.
+
+\subsection{Vai trò của Backpropagation}
+Backpropagation giúp mạng nơ-ron học từ dữ liệu bằng cách tính gradient và cập nhật trọng số để giảm Loss. Trong đề tài này, thuật toán được tự cài đặt bằng NumPy, không sử dụng TensorFlow hay PyTorch, giúp làm rõ cơ chế hoạt động của mạng MLP từ Forward Propagation, tính Loss, Backpropagation đến cập nhật trọng số.
+
+\section{Các thuật toán tối ưu (Optimization Algorithms)}
+\subsection{Khái niệm}
+Thuật toán tối ưu (Optimization Algorithm) là phương pháp cập nhật trọng số (Weight) và bias dựa trên gradient do Backpropagation tính được, nhằm giảm hàm mất mát (Loss Function) và cải thiện độ chính xác của mô hình. Trong đề tài này, ba thuật toán được sử dụng là Gradient Descent (GD), Stochastic Gradient Descent (SGD) và SGD with Momentum.
+
+\subsection{Gradient Descent (GD)}
+Gradient Descent cập nhật trọng số dựa trên toàn bộ tập dữ liệu ở mỗi lần cập nhật.
+\begin{align}
+    W &= W - \eta \frac{\partial L}{\partial W} \\
+    b &= b - \eta \frac{\partial L}{\partial b}
+\end{align}
+
+\subsection{Stochastic Gradient Descent (SGD)}
+SGD chỉ sử dụng một mẫu dữ liệu (hoặc mini-batch) để tính gradient và cập nhật trọng số.
+\begin{equation}
+    W = W - \eta \frac{\partial L_i}{\partial W}
+\end{equation}
+
+\subsection{SGD with Momentum}
+SGD with Momentum bổ sung thành phần Momentum để tận dụng hướng cập nhật của các bước trước, giúp giảm dao động và tăng tốc hội tụ.
+\begin{align}
+    v_t &= \beta v_{t-1} + (1 - \beta)\frac{\partial L}{\partial W} \\
+    W &= W - \eta v_t
+\end{align}
+Trong đó, $\beta$ là hệ số Momentum (thường khoảng 0.9).
+
+\section{Regularization L2}
+\subsection{Khái niệm}
+L2 Regularization (Weight Decay) là kỹ thuật giúp giảm hiện tượng overfitting bằng cách thêm một thành phần phạt (penalty) vào hàm mất mát, nhằm hạn chế các trọng số có giá trị quá lớn. Nhờ đó, mô hình có khả năng tổng quát hóa (generalization) tốt hơn trên dữ liệu mới mà vẫn giữ được thông tin từ các đặc trưng.
+
+\subsection{Công thức}
+Hàm mất mát sau khi áp dụng L2 Regularization:
+\begin{equation}
+    L' = L + \frac{\lambda}{2} ||W||_2^2
+\end{equation}
+Trong đó:
+\begin{itemize}
+    \item $L$: hàm mất mát gốc.
+    \item $W$: ma trận trọng số.
+    \item $\lambda$: hệ số Regularization.
+\end{itemize}
+Gradient sau khi thêm L2:
+\begin{equation}
+    \frac{\partial L'}{\partial W} = \frac{\partial L}{\partial W} + \lambda W
+\end{equation}
+Cập nhật trọng số:
+\begin{equation}
+    W = W - \eta \left( \frac{\partial L}{\partial W} + \lambda W \right)
+\end{equation}
+L2 giúp các trọng số được giảm dần trong quá trình huấn luyện, từ đó hạn chế mô hình học quá mức trên dữ liệu huấn luyện.
+
+\subsection{Vai trò}
+L2 Regularization giúp giảm overfitting, kiểm soát độ lớn của trọng số và cải thiện khả năng tổng quát hóa của mô hình. Trong đề tài này, L2 được tích hợp vào quá trình huấn luyện MLP để so sánh hiệu quả giữa mô hình có và không có Regularization trên tập dữ liệu Iris.
+
+\end{document}

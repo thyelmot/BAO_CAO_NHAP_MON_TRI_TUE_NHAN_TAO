@@ -1,0 +1,415 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{hyperref}
+
+% Cấu hình margin
+\geometry{a4paper, margin=2cm}
+
+% Cấu hình link
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={Báo cáo Đồ án AI},
+}
+
+\begin{document}
+
+% ================= TRANG BÌA =================
+\begin{titlepage}
+    \centering
+    \vspace*{0.5cm}
+    \Large \textbf{ĐẠI HỌC PHENIKAA} \\
+    \Large \textbf{TRƯỜNG CÔNG NGHỆ THÔNG TIN PHENIKAA} \\
+    \vspace{1.5cm}
+    % Nhớ thêm file logo vào thư mục và đổi tên tương ứng
+    \includegraphics[width=0.4\textwidth]{logoo.jpg} 
+    \vspace{1.5cm} \\
+    \Large \textbf{TÊN HỌC PHẦN: NHẬP MÔN TRÍ TUỆ NHÂN TẠO} \\
+    \vspace{0.5cm}
+    \Large \textbf{TÊN ĐỀ TÀI: CÀI ĐẶT PERCEPTRON VÀ MẠNG NƠ-RON NHIỀU LỚP (MLP) TỪ ĐẦU BẰNG NUMPY} \\
+    \vspace{1.5cm}
+    \begin{flushleft}
+        \textbf{Giảng viên hướng dẫn:} ThS. Phan Thị Hoài \\
+        \textbf{Sinh viên thực hiện:} 
+        \begin{itemize}
+            \item[] Ngô Quang Thiện - 24102651
+            \item[] Nguyễn Hưng Vũ - 24102769
+        \end{itemize}
+        \textbf{Khoá:} K18 - ICT3 \\
+        \textbf{Lớp tín chỉ:} CSE703041-2-3-25(N02) \\
+        \textbf{Chương trình đào tạo:} Khoa Học Dữ Liệu và Trí Tuệ Nhân Tạo
+    \end{flushleft}
+    
+    \vfill
+    \textbf{Hà Nội, tháng 7 năm 2026}
+\end{titlepage}
+
+% ================= MỤC LỤC & DANH MỤC =================
+\renewcommand{\contentsname}{\begin{center} MỤC LỤC \end{center}}
+\tableofcontents
+\newpage
+
+\renewcommand{\listfigurename}{\begin{center} DANH MỤC HÌNH ẢNH \end{center}}
+\listoffigures
+
+% ---- TÀI NGUYÊN MÃ NGUỒN ----
+\vspace{2cm}
+\noindent\large\textbf{TÀI NGUYÊN MÃ NGUỒN (SOURCE CODE)}
+\normalsize
+\begin{itemize}
+    \item \textbf{Link Google Colab:} \href{https://colab.research.google.com/drive/1K9pYV--SGPx2GZxzJHaitBoXe7rwpSwU?usp=sharing#scrollTo=Vi2DnylCO-6F}{Nhấn vào đây để xem báo cáo (Colab)}
+    \item \textbf{Link GitHub:} \href{https://github.com/thyelmot/BAO_CAO_NHAP_MON_TRI_TUE_NHAN_TAO}{Nhấn vào đây để xem mã nguồn (GitHub)}
+\end{itemize}
+\newpage
+
+% ================= NỘI DUNG CHÍNH =================
+
+\chapter{MỤC TIÊU}
+
+\section{Giới thiệu đề tài}
+Trong những năm gần đây, Trí tuệ nhân tạo (Artificial Intelligence - AI) đã trở thành một trong những lĩnh vực phát triển mạnh mẽ nhất của khoa học máy tính. Một trong những nền tảng quan trọng của AI hiện đại là mạng nơ-ron nhân tạo (Artificial Neural Network - ANN), mô phỏng cách hoạt động của hệ thần kinh sinh học nhằm học và đưa ra quyết định từ dữ liệu.
+
+Trong báo cáo này, nhóm tiến hành xây dựng mô hình Perceptron và Mạng nơ-ron nhiều lớp (Multi-Layer Perceptron - MLP) hoàn toàn bằng thư viện NumPy, không sử dụng các framework học sâu như TensorFlow hay PyTorch. Việc cài đặt từ đầu giúp hiểu rõ cơ chế lan truyền thuận (Forward Propagation), lan truyền ngược (Backpropagation) và quá trình tối ưu hóa tham số.
+
+\section{Mục tiêu đề tài}
+Đề tài nhằm tìm hiểu nguyên lý hoạt động của mạng nơ-ron nhân tạo thông qua việc tự cài đặt Perceptron và mạng nơ-ron nhiều lớp (MLP) hoàn toàn bằng thư viện NumPy, không sử dụng các framework học sâu như TensorFlow hay PyTorch. Bên cạnh đó, đề tài giúp làm rõ quá trình lan truyền thuận (forward propagation), lan truyền ngược (backpropagation) và cơ chế cập nhật trọng số trong quá trình huấn luyện. Cuối cùng, mô hình được đánh giá trên hai bài toán XOR và Iris, đồng thời so sánh hiệu quả của các phương pháp tối ưu SGD, SGD with Momentum và ảnh hưởng của regularization L2 đến khả năng hội tụ và độ chính xác của mô hình.
+
+\section{Công cụ và môi trường thực hiện}
+Đề tài được thực hiện bằng ngôn ngữ lập trình Python nhờ cú pháp đơn giản và hệ sinh thái phong phú trong lĩnh vực khoa học dữ liệu và học máy. Quá trình cài đặt mô hình sử dụng NumPy để thực hiện các phép toán ma trận và xây dựng toàn bộ thuật toán Perceptron, MLP, lan truyền thuận (Forward Propagation) và lan truyền ngược (Backpropagation) từ đầu mà không sử dụng các framework học sâu như TensorFlow hay PyTorch. Ngoài ra, Matplotlib được sử dụng để trực quan hóa quá trình huấn luyện thông qua các đồ thị như hàm mất mát (Loss) và độ chính xác (Accuracy), trong khi Scikit-learn được dùng để tải tập dữ liệu Iris, hỗ trợ chia tập huấn luyện/kiểm thử và đánh giá kết quả mô hình. Toàn bộ mã nguồn được phát triển và thử nghiệm trên môi trường Visual Studio Code giúp thuận tiện cho việc lập trình, kiểm thử và phân tích kết quả thực nghiệm.
+
+\chapter{CƠ SỞ LÝ THUYẾT}
+
+\section{Mạng Perceptron một lớp và Giới hạn phân tách tuyến tính}
+\subsection{Kiến trúc Perceptron}
+Perceptron là mô hình mạng nơ-ron nhân tạo đơn giản nhất. Mô hình này mô phỏng hoạt động của một nơ-ron sinh học bằng cách kết hợp các đầu vào thông qua trọng số và hàm kích hoạt để đưa ra kết quả phân loại. Perceptron có nhiệm vụ tìm một siêu phẳng (hyperplane) nhằm phân tách các lớp dữ liệu và được sử dụng trong các bài toán phân loại nhị phân. Tuy nhiên, mô hình chỉ hoạt động hiệu quả với dữ liệu phân tách tuyến tính và không thể giải quyết các bài toán phi tuyến như XOR.
+
+Một Perceptron gồm ba thành phần chính: lớp đầu vào (Input Layer), trọng số và bias (Weights \& Bias), và hàm kích hoạt (Activation Function). Lớp đầu vào tiếp nhận các đặc trưng của dữ liệu, mỗi đặc trưng được gán một trọng số $w_i$ thể hiện mức độ ảnh hưởng đến kết quả. Giá trị bias $b$ giúp điều chỉnh ngưỡng kích hoạt, tăng tính linh hoạt của mô hình. Tổng có trọng số của các đầu vào sau đó được đưa qua hàm kích hoạt để tạo ra đầu ra cuối cùng, thường là $0$ hoặc $1$ trong bài toán phân loại nhị phân. 
+
+Nguyên lý hoạt động của Perceptron gồm ba bước: (1) nhân các đặc trưng đầu vào với trọng số tương ứng, (2) cộng các giá trị này với bias để tạo tổng có trọng số, và (3) đưa kết quả qua hàm kích hoạt để xác định đầu ra. Trong quá trình huấn luyện, mô hình so sánh kết quả dự đoán với nhãn thực tế và cập nhật trọng số cùng bias khi dự đoán sai. Quá trình này được lặp lại nhiều lần cho đến khi mô hình hội tụ hoặc đạt số vòng lặp tối đa.
+
+\textbf{Công thức toán học:} \\
+Giả sử vector đầu vào của một mẫu dữ liệu là:
+\begin{equation}
+    \mathbf{x} = [x_1, x_2, \dots, x_n]
+\end{equation}
+và vector trọng số tương ứng là:
+\begin{equation}
+    \mathbf{w} = [w_1, w_2, \dots, w_n]
+\end{equation}
+Giá trị đầu vào của nơ-ron được tính theo công thức:
+\begin{equation}
+    z = \sum_{i=1}^n w_i x_i + b
+\end{equation}
+hay viết dưới dạng ma trận:
+\begin{equation}
+    z = \mathbf{w}^T \mathbf{x} + b
+\end{equation}
+Sau đó, đầu ra của Perceptron được xác định thông qua hàm kích hoạt:
+\begin{equation}
+    \hat{y} = f(z)
+\end{equation}
+Trong đó, hàm kích hoạt bước (Step Function) thường được sử dụng:
+\begin{equation}
+    f(z) = \begin{cases} 1, & z \ge 0 \\ 0, & z < 0 \end{cases}
+\end{equation}
+Khi mô hình dự đoán sai, các trọng số và bias được cập nhật theo quy tắc học Perceptron:
+\begin{align}
+    w_i &= w_i + \eta(y - \hat{y})x_i \\
+    b &= b + \eta(y - \hat{y})
+\end{align}
+Trong đó:
+\begin{itemize}
+    \item $y$: nhãn thực tế.
+    \item $\hat{y}$: nhãn dự đoán.
+    \item $\eta$: tốc độ học (learning rate).
+    \item $w_i$: trọng số của đặc trưng thứ $i$.
+    \item $b$: hệ số bias.
+\end{itemize}
+
+\subsection{Giới hạn phân tách tuyến tính (Bài toán XOR)}
+Perceptron là mô hình phân loại tuyến tính, chỉ có khả năng giải quyết các bài toán có dữ liệu phân tách tuyến tính (Linearly Separable), tức là có thể được phân chia hoàn toàn bằng một đường thẳng, mặt phẳng hoặc siêu phẳng. Trong quá trình huấn luyện, Perceptron điều chỉnh trọng số và bias để tìm ranh giới phân tách giữa các lớp dữ liệu. Nếu dữ liệu phân tách tuyến tính, mô hình sẽ hội tụ và phân loại chính xác. Ngược lại, với các bài toán không phân tách tuyến tính, Perceptron không thể tìm được nghiệm phù hợp và sẽ không hội tụ.
+
+Bài toán XOR (Exclusive OR) là một ví dụ kinh điển minh họa cho giới hạn của Perceptron. Hàm XOR cho kết quả bằng 1 khi hai đầu vào khác nhau và bằng 0 khi hai đầu vào giống nhau. \\
+Bảng chân trị của phép toán XOR được thể hiện như sau:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+$x_1$ & $x_2$ & Output \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+Các điểm dữ liệu của XOR được phân bố theo hai đường chéo đối diện, nên không thể phân tách hoàn toàn bằng một đường thẳng. Do đó, XOR là một bài toán không phân tách tuyến tính (Non-linearly Separable) và là ví dụ kinh điển minh họa giới hạn của Perceptron một lớp.
+
+\section{Các hàm kích hoạt (Activation Function)}
+Hàm kích hoạt (Activation Function) có nhiệm vụ chuyển đổi tổng có trọng số của đầu vào thành đầu ra của nơ-ron, đồng thời tạo tính phi tuyến cho mạng nơ-ron. Nhờ đó, mô hình có thể học các mối quan hệ phức tạp và giải quyết các bài toán phi tuyến như XOR. Việc lựa chọn hàm kích hoạt ảnh hưởng trực tiếp đến khả năng học và hiệu quả của mô hình. Trong đề tài này, các hàm được sử dụng gồm Sigmoid, ReLU và Softmax.
+
+\subsection{Hàm Sigmoid}
+Sigmoid là hàm kích hoạt biến đổi giá trị đầu vào về khoảng $(0,1)$, thường được sử dụng trong bài toán phân loại nhị phân.
+\begin{equation}
+    \sigma(x) = \frac{1}{1 + e^{-x}}
+\end{equation}
+
+\subsection{Hàm ReLU}
+ReLU là hàm kích hoạt phổ biến trong các Hidden Layer nhờ khả năng tính toán nhanh và giảm hiện tượng mất gradient.
+\begin{equation}
+    f(x) = \max(0, x)
+\end{equation}
+
+\subsection{Hàm Softmax}
+Softmax được sử dụng ở lớp đầu ra của bài toán phân loại nhiều lớp, chuyển vector đầu ra thành phân phối xác suất có tổng bằng 1.
+\begin{equation}
+    P(y=i) = \frac{e^{z_i}}{\sum_{j=1}^n e^{z_j}}
+\end{equation}
+
+\section{Lan truyền thuận (Forward Propagation)}
+Lan truyền thuận (Forward Propagation) là quá trình truyền dữ liệu từ Input Layer qua các Hidden Layer đến Output Layer để tạo ra kết quả dự đoán của mô hình. Ở mỗi nơ-ron, dữ liệu được nhân với trọng số (Weight), cộng Bias, sau đó đi qua hàm kích hoạt trước khi truyền sang lớp tiếp theo.
+
+\textbf{Nguyên lý hoạt động:} \\
+Quá trình lan truyền thuận gồm các bước:
+\begin{itemize}
+    \item \textbf{Bước 1:} Nhận vector đầu vào $\mathbf{x} = [x_1, x_2, \dots, x_n]$
+    \item \textbf{Bước 2:} Tính tổng có trọng số $z = \mathbf{w}^T \mathbf{x} + b$
+    \item \textbf{Bước 3:} Áp dụng hàm kích hoạt $a = f(z)$ (Trong đó, $f(\cdot)$ có thể là Sigmoid, ReLU hoặc Softmax).
+    \item \textbf{Bước 4:} Đầu ra của lớp hiện tại được truyền sang lớp tiếp theo và lặp lại cho đến Output Layer để tạo ra kết quả dự đoán $\hat{y}$.
+\end{itemize}
+
+\textbf{Công thức tổng quát:} \\
+Đối với lớp thứ $l$ của mạng MLP, quá trình lan truyền thuận được mô tả bởi:
+\begin{align}
+    Z^{(l)} &= W^{(l)} A^{(l-1)} + b^{(l)} \\
+    A^{(l)} &= f\left(Z^{(l)}\right)
+\end{align}
+
+\textbf{Vai trò của Forward Propagation:} \\
+Forward Propagation là bước tạo ra kết quả dự đoán từ dữ liệu đầu vào và là cơ sở để tính hàm mất mát (Loss Function). Giá trị Loss sau đó được sử dụng trong Backpropagation để tính gradient và cập nhật trọng số của mạng. Hai quá trình này phối hợp trong mỗi vòng huấn luyện, giúp mô hình dần học được quy luật của dữ liệu và nâng cao độ chính xác dự đoán.
+
+\section{Hàm mất mát (Loss Function)}
+Hàm mất mát (Loss Function) là hàm toán học dùng để đo lường sai lệch giữa giá trị dự đoán và giá trị thực tế. Giá trị Loss càng nhỏ thì mô hình dự đoán càng chính xác. 
+
+\textbf{Mean Squared Error (MSE):} Dùng cho bài toán hồi quy.
+\begin{equation}
+    L = \frac{1}{n} \sum_{i=1}^n (y_i - \hat{y}_i)^2
+\end{equation}
+
+\textbf{Cross-Entropy Loss:} Dùng cho bài toán phân loại.
+\begin{equation}
+    L = - \sum_{i=1}^C y_i \log(\hat{y}_i)
+\end{equation}
+
+\textbf{Vai trò:} \\
+Trong mỗi vòng huấn luyện, mạng nơ-ron thực hiện theo quy trình: Forward Propagation $\rightarrow$ Loss Function $\rightarrow$ Backpropagation $\rightarrow$ Cập nhật trọng số.
+
+\section{Lan truyền ngược (Backpropagation)}
+Lan truyền ngược (Backpropagation) là thuật toán dùng để huấn luyện mạng nơ-ron nhiều lớp (MLP). Sau khi Forward Propagation tạo ra kết quả dự đoán và tính Loss, Backpropagation sẽ lan truyền sai số từ Output Layer về Hidden Layer, tính gradient của từng trọng số và bias bằng quy tắc đạo hàm dây chuyền (Chain Rule).
+
+\textbf{Quy tắc đạo hàm dây chuyền (Chain Rule):}
+\begin{equation}
+    \frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}
+\end{equation}
+
+\textbf{Tính Gradient:} \\
+Sai số tại lớp ẩn được tính theo:
+\begin{equation}
+    \delta^{(l)} = (W^{(l+1)})^T \delta^{(l+1)} \odot f'(Z^{(l)})
+\end{equation}
+Gradient của trọng số và bias:
+\begin{align}
+    \frac{\partial L}{\partial W^{(l)}} &= \delta^{(l)} (A^{(l-1)})^T \\
+    \frac{\partial L}{\partial b^{(l)}} &= \delta^{(l)}
+\end{align}
+
+\textbf{Cập nhật trọng số:}
+\begin{align}
+    W^{(l)} &= W^{(l)} - \eta \frac{\partial L}{\partial W^{(l)}} \\
+    b^{(l)} &= b^{(l)} - \eta \frac{\partial L}{\partial b^{(l)}}
+\end{align}
+
+\section{Các thuật toán tối ưu (Optimization Algorithms)}
+Thuật toán tối ưu (Optimization Algorithm) là phương pháp cập nhật trọng số và bias dựa trên gradient nhằm giảm hàm mất mát.
+
+\textbf{Gradient Descent (GD):}
+\begin{align}
+    W &= W - \eta \frac{\partial L}{\partial W} \\
+    b &= b - \eta \frac{\partial L}{\partial b}
+\end{align}
+
+\textbf{Stochastic Gradient Descent (SGD):}
+\begin{equation}
+    W = W - \eta \frac{\partial L_i}{\partial W}
+\end{equation}
+
+\textbf{SGD with Momentum:}
+\begin{align}
+    v_t &= \beta v_{t-1} + (1 - \beta)\frac{\partial L}{\partial W} \\
+    W &= W - \eta v_t
+\end{align}
+Trong đó, $\beta$ là hệ số Momentum (thường khoảng 0.9).
+
+\section{Regularization L2}
+L2 Regularization (Weight Decay) giúp giảm hiện tượng overfitting bằng cách thêm một thành phần phạt vào hàm mất mát.
+\begin{equation}
+    L' = L + \frac{\lambda}{2} ||W||_2^2
+\end{equation}
+Gradient và cập nhật trọng số sau khi thêm L2:
+\begin{align}
+    \frac{\partial L'}{\partial W} &= \frac{\partial L}{\partial W} + \lambda W \\
+    W &= W - \eta \left( \frac{\partial L}{\partial W} + \lambda W \right)
+\end{align}
+
+
+\chapter{YÊU CẦU CÀI ĐẶT CƠ BẢN}
+
+\section{Cài đặt Perceptron đơn giản và bài toán XOR}
+Nhóm tiến hành huấn luyện Perceptron một lớp với Step Function trên tập dữ liệu XOR gồm bốn mẫu $(0,0) \rightarrow 0, (0,1) \rightarrow 1, (1,0) \rightarrow 1$ và $(1,1) \rightarrow 0$.
+
+Kết quả thực nghiệm cho thấy mô hình không thể hội tụ sau quá trình huấn luyện, giá trị Loss không giảm về $0$ và độ chính xác chỉ đạt khoảng 50\%. Các dự đoán vẫn còn sai do Perceptron không tìm được ranh giới phân tách phù hợp.
+
+Biểu đồ Decision Boundary cho thấy Perceptron chỉ tạo được một ranh giới quyết định tuyến tính, trong khi dữ liệu XOR có phân bố không phân tách tuyến tính, nên không thể phân loại chính xác tất cả các mẫu.
+
+Kết quả này hoàn toàn phù hợp với lý thuyết, khẳng định Perceptron chỉ giải quyết được các bài toán phân tách tuyến tính. Để xử lý các bài toán phi tuyến như XOR, cần sử dụng Mạng nơ-ron nhiều lớp (MLP) kết hợp với các hàm kích hoạt phi tuyến như Sigmoid hoặc ReLU.
+
+% ---- CHÈN ẢNH PERCEPTRON XOR ----
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{40.jpg}
+    \caption{Perceptron trên bài toán XOR (Không thể phân tách)}
+    \label{fig:perceptron_xor}
+\end{figure}
+
+\section{Đánh giá kết quả cài đặt thuật toán MLP}
+Nhóm đã cài đặt thành công Mạng nơ-ron nhiều lớp (MLP) hoàn toàn bằng NumPy, không sử dụng các framework học sâu như TensorFlow hay PyTorch. Mô hình được thiết kế linh hoạt thông qua tham số \texttt{layer\_sizes}, cho phép dễ dàng thay đổi số lượng lớp ẩn và số nơ-ron của từng lớp.
+
+Quá trình Forward Propagation được triển khai bằng phép nhân ma trận, hỗ trợ các hàm kích hoạt Sigmoid và ReLU, đồng thời tự động lựa chọn Sigmoid hoặc Softmax ở lớp đầu ra kết hợp với Cross-Entropy Loss phù hợp với từng bài toán. Các giá trị trung gian được lưu lại để phục vụ cho quá trình lan truyền ngược.
+
+Đối với Backward Propagation, nhóm đã cài đặt thành công thuật toán dựa trên quy tắc đạo hàm dây chuyền (Chain Rule) để tính gradient của trọng số và bias. Quá trình lan truyền sai số giữa các lớp được thực hiện chính xác bằng các phép toán ma trận NumPy. Kết quả thực nghiệm cho thấy thuật toán hoạt động ổn định, các trọng số được cập nhật chính xác thông qua Gradient Descent.
+
+% ---- CHÈN ẢNH HÀM KÍCH HOẠT ----
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{41.jpg}
+    \caption{Đồ thị các Hàm Kích Hoạt và Đạo hàm tương ứng}
+    \label{fig:activation_functions}
+\end{figure}
+
+\section{Đánh giá trên bài toán XOR}
+Đối với bài toán XOR, mạng MLP được cấu hình theo kiến trúc 2 Input – 4 Hidden – 1 Output và sử dụng hai hàm kích hoạt Sigmoid và ReLU để so sánh hiệu quả huấn luyện.
+
+Kết quả thực nghiệm cho thấy mô hình MLP hội tụ thành công và phân loại chính xác 100\% các mẫu dữ liệu XOR, khắc phục hoàn toàn hạn chế của Perceptron một lớp. Biểu đồ Decision Boundary cho thấy mạng đã học được ranh giới quyết định phi tuyến. Đồng thời, đồ thị Loss theo Epoch cho thấy ReLU hội tụ nhanh hơn Sigmoid.
+
+% ---- CHÈN ẢNH MLP XOR ----
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{42.jpg}
+    \includegraphics[width=1\textwidth]{43.jpg}
+    \caption{Tốc độ hội tụ và ranh giới quyết định của MLP trên bài toán XOR}
+    \label{fig:mlp_xor}
+\end{figure}
+
+\section{Đánh giá trên tập dữ liệu Iris}
+Trước khi huấn luyện, dữ liệu Iris được chuẩn hóa bằng StandardScaler, chuyển đổi nhãn sang One-hot Encoding và chia theo tỷ lệ 80\% dữ liệu huấn luyện và 20\% dữ liệu kiểm tra. Mô hình được cấu hình theo kiến trúc 4 Input – 8 Hidden – 3 Output, sử dụng ReLU cho lớp ẩn, Softmax cho lớp đầu ra và Learning Rate = 0.1.
+
+Kết quả huấn luyện cho thấy Train Loss và Validation Loss giảm đều và hội tụ sau khoảng 600 epochs. Khi đánh giá trên tập kiểm tra, mô hình đạt độ chính xác từ 96\% đến 100\%. 
+
+% ---- CHÈN ẢNH LOSS IRIS ----
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{44.jpg}
+    \caption{Loss của MLP trên tập dữ liệu Iris (ReLU)}
+    \label{fig:loss_iris}
+\end{figure}
+
+
+\chapter{YÊU CẦU MỞ RỘNG}
+
+\section{Đánh giá hiệu quả của thuật toán tối ưu SGD với Momentum}
+Nhóm tiến hành huấn luyện hai mô hình MLP trên tập dữ liệu Iris, sử dụng lần lượt SGD và SGD with Momentum ($\beta=0.9$) với cùng cấu hình và số epoch để đánh giá hiệu quả của thuật toán tối ưu.
+
+Kết quả thực nghiệm cho thấy SGD with Momentum có tốc độ hội tụ vượt trội. Đường Loss giảm nhanh và đạt mức khoảng $0.05$ chỉ sau gần 100 epochs, trong khi SGD vẫn còn ở mức khoảng $0.18$ sau 300 epochs. Điều này cho thấy Momentum giúp mô hình tìm đến điểm tối ưu nhanh hơn.
+
+% ---- CHÈN ẢNH SGD VS MOMENTUM ----
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{45.jpg}
+    \caption{So sánh tốc độ hội tụ: SGD vs SGD+Momentum trên Iris}
+    \label{fig:sgd_momentum}
+\end{figure}
+
+\section{Ảnh hưởng của số lượng lớp ẩn (Hidden Layers)}
+Nhóm tiến hành huấn luyện ba kiến trúc MLP trên tập dữ liệu Iris trong 500 epochs:
+\begin{itemize}
+    \item 1 lớp ẩn: [4–32–3]
+    \item 2 lớp ẩn: [4–32–16–3]
+    \item 3 lớp ẩn: [4–32–16–8–3]
+\end{itemize}
+
+\textbf{Kết quả thực nghiệm:}
+\begin{itemize}
+    \item \textbf{Mô hình 1 lớp ẩn:} Train Loss và Validation Loss giảm đều nhưng hội tụ chậm, đạt khoảng 0.06 sau gần 500 epochs.
+    \item \textbf{Mô hình 2 lớp ẩn:} Hội tụ nhanh nhất, cả Train Loss và Validation Loss giảm mạnh và đạt khoảng 0.04 chỉ sau 150–200 epochs.
+    \item \textbf{Mô hình 3 lớp ẩn:} Loss tiếp tục giảm đến khoảng 0.02, tuy nhiên tốc độ và độ chính xác chỉ cải thiện rất ít so với mô hình 2 lớp ẩn, trong khi số lượng tham số tăng đáng kể.
+\end{itemize}
+
+Kiến trúc [4–32–16–3] là lựa chọn tối ưu cho bài toán phân loại Iris, giúp mô hình học nhanh, ổn định và có khả năng tổng quát hóa tốt.
+
+% ---- CHÈN ẢNH SO SÁNH SỐ LỚP ẨN ----
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{46.jpg}
+    \includegraphics[width=1\textwidth]{47.jpg}
+    \caption{Ảnh hưởng của số lượng lớp ẩn đến quá trình huấn luyện}
+    \label{fig:hidden_layers}
+\end{figure}
+
+\section{Đánh giá hiệu quả của L2 Regularization}
+Để đánh giá khả năng chống overfitting, nhóm sử dụng mô hình MLP có cấu trúc lớn (4–64–32–3) và chỉ huấn luyện trên 30 mẫu dữ liệu trong 800 epochs. Thực nghiệm được so sánh giữa hai trường hợp không sử dụng L2 ($\lambda=0$) và có sử dụng L2 ($\lambda=0.15$).
+
+Kết quả thực nghiệm: Khi không sử dụng L2, Train Loss giảm rất nhanh về gần 0 trong khi Validation Loss dừng ở mức cao (khoảng 0.2), cho thấy mô hình bị overfitting. Ngược lại, khi áp dụng L2 Regularization, Train Loss giảm chậm hơn nhưng ổn định, đồng thời Validation Loss tiếp tục giảm xuống khoảng 0.1, khoảng cách giữa Train Loss và Validation Loss được thu hẹp đáng kể.
+
+% ---- CHÈN ẢNH L2 REGULARIZATION ----
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{48.jpg}
+    \caption{Đánh giá hiệu quả chống Overfitting của L2 Regularization}
+    \label{fig:l2_regularization}
+\end{figure}
+
+\chapter{DỮ LIỆU VÀ MÔI TRƯỜNG XỬ LÝ}
+
+\section{Tập dữ liệu}
+Đề tài sử dụng hai tập dữ liệu để kiểm thử và đánh giá mô hình:
+\begin{itemize}
+    \item \textbf{Tập dữ liệu XOR:} Gồm 4 mẫu nhị phân $(0,0) \rightarrow 0, (0,1) \rightarrow 1, (1,0) \rightarrow 1, (1,1) \rightarrow 0$. Bộ dữ liệu này được sử dụng để kiểm chứng giới hạn của Perceptron và khả năng giải quyết bài toán phi tuyến của mạng MLP.
+    \item \textbf{Tập dữ liệu Iris:} Bộ dữ liệu gồm 150 mẫu, thuộc 3 loài hoa Iris, mỗi mẫu có 4 đặc trưng. Dữ liệu được chuẩn hóa bằng StandardScaler, nhãn được mã hóa One-Hot Encoding, sau đó chia thành tập huấn luyện (80\%) và kiểm tra (20\%).
+\end{itemize}
+
+\section{Môi trường và thư viện}
+Các thực nghiệm được thực hiện trên Python 3.13 trong Google Colab (Visual Studio Code).
+Các thư viện sử dụng gồm:
+\begin{itemize}
+    \item \textbf{NumPy:} Cài đặt toàn bộ mô hình Perceptron, MLP, Forward Propagation, Backpropagation, SGD, Momentum và L2 Regularization.
+    \item \textbf{Matplotlib, Seaborn:} Trực quan hóa đồ thị Loss, Decision Boundary và Confusion Matrix.
+    \item \textbf{Scikit-learn:} Hỗ trợ tải dữ liệu Iris, chuẩn hóa dữ liệu, chia tập huấn luyện/kiểm tra và đánh giá mô hình.
+\end{itemize}
+
+\begin{center}
+    \vspace{1cm}
+    \textbf{--- HẾT ---}
+\end{center}
+
+\end{document}
