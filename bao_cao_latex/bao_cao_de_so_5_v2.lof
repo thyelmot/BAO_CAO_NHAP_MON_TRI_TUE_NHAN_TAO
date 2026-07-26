@@ -1,0 +1,13 @@
+\babel@toc {vietnamese}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Perceptron trên bài toán XOR (Không thể phân tách)}}{10}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Đồ thị các Hàm Kích Hoạt và Đạo hàm tương ứng}}{11}{figure.3.2}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Tốc độ hội tụ và ranh giới quyết định của MLP trên bài toán XOR}}{12}{figure.3.3}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Loss của MLP trên tập dữ liệu Iris (ReLU)}}{13}{figure.3.4}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces So sánh tốc độ hội tụ: SGD vs SGD+Momentum trên Iris}}{14}{figure.4.1}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Ảnh hưởng của số lượng lớp ẩn đến quá trình huấn luyện}}{15}{figure.4.2}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Đánh giá hiệu quả chống Overfitting của L2 Regularization}}{16}{figure.4.3}%
+\addvspace {10\p@ }

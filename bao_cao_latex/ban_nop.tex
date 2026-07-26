@@ -326,12 +326,12 @@ Trong đó, $\beta$ là hệ số Momentum (thường khoảng 0.9).
 \section{Regularization L2}
 L2 Regularization (Weight Decay) giúp giảm hiện tượng overfitting bằng cách thêm một thành phần phạt vào hàm mất mát.
 \begin{equation}
-    L' = L + \frac{\lambda}{2} \sum_{l=1}^L ||W^{(l)}||_F^2
+    L' = L + \frac{\lambda}{2N} \sum_{l=1}^L ||W^{(l)}||_F^2
 \end{equation}
 Gradient và cập nhật trọng số sau khi thêm L2 (chỉ áp dụng cho trọng số, không áp dụng cho bias):
 \begin{align}
-    \frac{\partial L'}{\partial W^{(l)}} &= \frac{\partial L}{\partial W^{(l)}} + \lambda W^{(l)} \\
-    W^{(l)} &= W^{(l)} - \eta \left( \frac{\partial L}{\partial W^{(l)}} + \lambda W^{(l)} \right)
+    \frac{\partial L'}{\partial W^{(l)}} &= \frac{\partial L}{\partial W^{(l)}} + \frac{\lambda}{N} W^{(l)} \\
+    W^{(l)} &= W^{(l)} - \eta \left( \frac{\partial L}{\partial W^{(l)}} + \frac{\lambda}{N} W^{(l)} \right)
 \end{align}
 
 
