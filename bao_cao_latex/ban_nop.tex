@@ -219,11 +219,12 @@ ReLU là hàm kích hoạt phổ biến trong các Hidden Layer nhờ khả năn
 \begin{equation}
     f'(z) = \begin{cases} 1, & z > 0 \\ 0, & z \le 0 \end{cases}
 \end{equation}
+\textit{Lưu ý: Tại điểm $z=0$, hàm ReLU không có đạo hàm chính thức. Trong thực tế lập trình Machine Learning, ta chọn dưới đạo hàm (subgradient) bằng 0.}
 
 \subsection{Hàm Softmax}
-Softmax được sử dụng ở lớp đầu ra ($L$) của bài toán phân loại nhiều lớp, chuyển vector đầu vào thành phân phối xác suất có tổng bằng 1. Nhất quán với quy ước ký hiệu trong Bảng~\ref{tab:symbols}, đầu ra của lớp Softmax được ký hiệu là $A^{(L)}$:
+Softmax được sử dụng ở lớp đầu ra ($L$) của bài toán phân loại nhiều lớp, chuyển vector đầu vào thành phân phối xác suất có tổng bằng 1. Nhất quán với quy ước ký hiệu trong Bảng~\ref{tab:symbols}, đầu ra của lớp Softmax tại nơ-ron thứ $c$ được ký hiệu là:
 \begin{equation}
-    \hat{y}_c = A^{(L)}_c = \frac{e^{z_c}}{\sum_{j=1}^C e^{z_j}}
+    \hat{y}_c = A^{(L)}_c = \frac{e^{z_c^{(L)}}}{\sum_{j=1}^C e^{z_j^{(L)}}}
 \end{equation}
 hoặc viết gọn dưới dạng ma trận:
 \begin{equation}
@@ -261,7 +262,12 @@ Hàm mất mát (Loss Function) là hàm toán học dùng để đo lường sa
     \mathcal{L} = \frac{1}{N} \sum_{i=1}^N (y_i - \hat{y}_i)^2
 \end{equation}
 
-\textbf{Cross-Entropy Loss:} Dùng cho bài toán phân loại nhiều lớp (tính trên $N$ mẫu dữ liệu, mỗi mẫu có $C$ lớp).
+\textbf{Binary Cross-Entropy Loss:} Dùng cho bài toán phân loại nhị phân ($C=1$, đầu ra Sigmoid):
+\begin{equation}
+    \mathcal{L} = - \frac{1}{N} \sum_{i=1}^N \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \right]
+\end{equation}
+
+\textbf{Categorical Cross-Entropy Loss:} Dùng cho bài toán phân loại nhiều lớp ($C > 1$, tính trên $N$ mẫu dữ liệu, mỗi mẫu có $C$ lớp):
 \begin{equation}
     \mathcal{L} = - \frac{1}{N} \sum_{i=1}^N \sum_{c=1}^C y_{ic} \log(\hat{y}_{ic})
 \end{equation}
@@ -277,24 +283,21 @@ Lan truyền ngược (Backpropagation) là thuật toán dùng để huấn luy
     \frac{\partial \mathcal{L}}{\partial w} = \frac{\partial \mathcal{L}}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}
 \end{equation}
 
-\textbf{Tính Gradient:} \\
-Đạo hàm của hàm mất mát theo đầu vào của lớp cuối cùng (kết hợp Softmax và Cross-Entropy) được tính gọn bằng:
+\textbf{Tính Gradient trên Mini-batch $N$ mẫu:} \\
+Đạo hàm của hàm mất mát theo đầu vào của lớp cuối cùng (kết hợp Softmax/Sigmoid và Cross-Entropy) được tính bằng:
 \begin{equation}
     \delta^{(L)} = A^{(L)} - Y
 \end{equation}
-Sai số tại lớp ẩn được tính theo:
+Sai số tại lớp ẩn thứ $l$ được lan truyền ngược theo công thức:
 \begin{equation}
     \delta^{(l)} = (W^{(l+1)})^T \delta^{(l+1)} \odot f'(Z^{(l)})
 \end{equation}
-Gradient của trọng số và bias:
+Gradient trung bình của hàm mất mát theo ma trận trọng số và bias trên mini-batch $N$ mẫu:
 \begin{align}
-    \frac{\partial \mathcal{L}}{\partial W^{(l)}} &= \delta^{(l)} (A^{(l-1)})^T \\
-    \frac{\partial \mathcal{L}}{\partial b^{(l)}} &= \delta^{(l)}
+    \frac{\partial \mathcal{L}}{\partial W^{(l)}} &= \frac{1}{N} \delta^{(l)} (A^{(l-1)})^T \\
+    \frac{\partial \mathcal{L}}{\partial b^{(l)}} &= \frac{1}{N} \sum_{i=1}^N \delta_i^{(l)}
 \end{align}
-\textit{Lưu ý: Công thức (2.23) áp dụng cho trường hợp lan truyền ngược của một mẫu dữ liệu (single sample). Khi huấn luyện theo mini-batch gồm $N$ mẫu, gradient của bias được tính bằng tổng hoặc trung bình các vector sai số của toàn bộ batch:}
-\begin{equation}
-    \frac{\partial \mathcal{L}}{\partial b^{(l)}} = \frac{1}{N} \sum_{i=1}^N \delta_i^{(l)}
-\end{equation}
+\textit{Lưu ý: Khi hiện thực bằng NumPy theo quy ước ma trận hàng (mỗi hàng là 1 mẫu dữ liệu), phép nhân ma trận được chuyển vị tương ứng: $\delta^{(l)} = \delta^{(l+1)} (W^{(l+1)})^T \odot f'(Z^{(l)})$ và $\frac{\partial \mathcal{L}}{\partial W^{(l)}} = \frac{1}{N} (A^{(l-1)})^T \delta^{(l)}$.}
 
 \textbf{Cập nhật trọng số:}
 \begin{align}
@@ -320,11 +323,11 @@ Thuật toán tối ưu (Optimization Algorithm) là phương pháp cập nhật
 \textbf{SGD with Momentum:}
 \begin{align}
     v_t^{W^{(l)}} &= \beta v_{t-1}^{W^{(l)}} - \eta \frac{\partial \mathcal{L}}{\partial W^{(l)}} \\
-    W^{(l)} &= W^{(l)} + v_t^{W^{(l)}} \\
+    W_t^{(l)} &= W_{t-1}^{(l)} + v_t^{W^{(l)}} \\
     v_t^{b^{(l)}} &= \beta v_{t-1}^{b^{(l)}} - \eta \frac{\partial \mathcal{L}}{\partial b^{(l)}} \\
-    b^{(l)} &= b^{(l)} + v_t^{b^{(l)}}
+    b_t^{(l)} &= b_{t-1}^{(l)} + v_t^{b^{(l)}}
 \end{align}
-Trong đó, $\beta$ là hệ số Momentum (thường khoảng 0.9).
+Trong đó, $\beta$ là hệ số Momentum (thường chọn $\beta = 0.9$).
 
 \section{Regularization L2}
 L2 Regularization (Weight Decay) giúp giảm hiện tượng overfitting bằng cách thêm một thành phần phạt vào hàm mất mát.
