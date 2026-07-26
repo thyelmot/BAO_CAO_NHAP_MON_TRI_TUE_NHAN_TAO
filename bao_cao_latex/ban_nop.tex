@@ -278,6 +278,10 @@ Lan truyền ngược (Backpropagation) là thuật toán dùng để huấn luy
 \end{equation}
 
 \textbf{Tính Gradient:} \\
+Đạo hàm của hàm mất mát theo đầu vào của lớp cuối cùng (kết hợp Softmax và Cross-Entropy) được tính gọn bằng:
+\begin{equation}
+    \delta^{(L)} = A^{(L)} - Y
+\end{equation}
 Sai số tại lớp ẩn được tính theo:
 \begin{equation}
     \delta^{(l)} = (W^{(l+1)})^T \delta^{(l+1)} \odot f'(Z^{(l)})
@@ -312,10 +316,10 @@ Thuật toán tối ưu (Optimization Algorithm) là phương pháp cập nhật
 
 \textbf{SGD with Momentum:}
 \begin{align}
-    v_t^{W^{(l)}} &= \beta v_{t-1}^{W^{(l)}} + \eta \frac{\partial L}{\partial W^{(l)}} \\
-    W^{(l)} &= W^{(l)} - v_t^{W^{(l)}} \\
-    v_t^{b^{(l)}} &= \beta v_{t-1}^{b^{(l)}} + \eta \frac{\partial L}{\partial b^{(l)}} \\
-    b^{(l)} &= b^{(l)} - v_t^{b^{(l)}}
+    v_t^{W^{(l)}} &= \beta v_{t-1}^{W^{(l)}} - \eta \frac{\partial L}{\partial W^{(l)}} \\
+    W^{(l)} &= W^{(l)} + v_t^{W^{(l)}} \\
+    v_t^{b^{(l)}} &= \beta v_{t-1}^{b^{(l)}} - \eta \frac{\partial L}{\partial b^{(l)}} \\
+    b^{(l)} &= b^{(l)} + v_t^{b^{(l)}}
 \end{align}
 Trong đó, $\beta$ là hệ số Momentum (thường khoảng 0.9).
 
