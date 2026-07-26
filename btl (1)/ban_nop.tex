@@ -95,6 +95,39 @@ Trong báo cáo này, nhóm tiến hành xây dựng mô hình Perceptron và M�
 
 \chapter{CƠ SỞ LÝ THUYẾT}
 
+\section{Quy ước ký hiệu}
+Để đảm bảo tính thống nhất trong toàn bộ báo cáo, các ký hiệu toán học được sử dụng như Bảng~\ref{tab:symbols}. Theo quy ước phổ biến trong học sâu (Deep Learning), chữ thường biểu diễn vector hoặc scalar, còn chữ hoa biểu diễn ma trận.
+
+\begin{table}[H]
+\centering
+\caption{Các ký hiệu sử dụng trong báo cáo}
+\label{tab:symbols}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{cl}
+\hline
+\textbf{Ký hiệu} & \textbf{Ý nghĩa} \\ \hline
+$X$ & Ma trận dữ liệu đầu vào gồm nhiều mẫu \\
+$x$ & Vector đặc trưng của một mẫu dữ liệu \\
+$W^{(l)}$ & Ma trận trọng số của lớp thứ $l$ \\
+$w$ & Vector trọng số của một nơ-ron \\
+$b^{(l)}$ & Vector bias của lớp thứ $l$ \\
+$z$ & Giá trị trước hàm kích hoạt của một nơ-ron \\
+$Z^{(l)}$ & Ma trận giá trị trước kích hoạt của lớp thứ $l$ \\
+$a$ & Đầu ra của một nơ-ron sau hàm kích hoạt \\
+$A^{(l)}$ & Ma trận đầu ra của lớp thứ $l$ sau hàm kích hoạt \\
+$\hat{y}$ & Giá trị dự đoán của mô hình ($\hat{y} = A^{(L)}$) \\
+$y$ & Nhãn thực tế \\
+$\delta^{(l)}$ & Sai số lan truyền ngược của lớp thứ $l$ \\
+$\eta$ & Learning Rate \\
+$\beta$ & Hệ số Momentum \\
+$\lambda$ & Hệ số L2 Regularization \\
+$L$ & Hàm mất mát (Loss Function) \\
+$N$ & Số lượng mẫu dữ liệu \\
+$C$ & Số lượng lớp cần phân loại \\
+\hline
+\end{tabular}
+\end{table}
+
 \section{Mạng Perceptron một lớp và Giới hạn phân tách tuyến tính}
 \subsection{Kiến trúc Perceptron}
 Perceptron là mô hình mạng nơ-ron nhân tạo đơn giản nhất. Mô hình này mô phỏng hoạt động của một nơ-ron sinh học bằng cách kết hợp các đầu vào thông qua trọng số và hàm kích hoạt để đưa ra kết quả phân loại. Perceptron có nhiệm vụ tìm một siêu phẳng (hyperplane) nhằm phân tách các lớp dữ liệu và được sử dụng trong các bài toán phân loại nhị phân. Tuy nhiên, mô hình chỉ hoạt động hiệu quả với dữ liệu phân tách tuyến tính và không thể giải quyết các bài toán phi tuyến như XOR.
@@ -172,17 +205,29 @@ Sigmoid là hàm kích hoạt biến đổi giá trị đầu vào về khoảng
 \begin{equation}
     \sigma(z) = \frac{1}{1 + e^{-z}}
 \end{equation}
+Đạo hàm của Sigmoid được tính theo công thức:
+\begin{equation}
+    \sigma'(z) = \sigma(z)\bigl(1 - \sigma(z)\bigr)
+\end{equation}
 
 \subsection{Hàm ReLU}
 ReLU là hàm kích hoạt phổ biến trong các Hidden Layer nhờ khả năng tính toán nhanh và giảm hiện tượng mất gradient.
 \begin{equation}
     f(z) = \max(0, z)
 \end{equation}
+Đạo hàm của ReLU:
+\begin{equation}
+    f'(z) = \begin{cases} 1, & z > 0 \\ 0, & z \le 0 \end{cases}
+\end{equation}
 
 \subsection{Hàm Softmax}
-Softmax được sử dụng ở lớp đầu ra của bài toán phân loại nhiều lớp, chuyển vector đầu ra thành phân phối xác suất có tổng bằng 1.
+Softmax được sử dụng ở lớp đầu ra ($L$) của bài toán phân loại nhiều lớp, chuyển vector đầu vào thành phân phối xác suất có tổng bằng 1. Nhất quán với quy ước ký hiệu trong Bảng~\ref{tab:symbols}, đầu ra của lớp Softmax được ký hiệu là $A^{(L)}$:
 \begin{equation}
-    P(y=c) = \frac{e^{z_c}}{\sum_{j=1}^C e^{z_j}}
+    \hat{y}_c = A^{(L)}_c = \frac{e^{z_c}}{\sum_{j=1}^C e^{z_j}}
+\end{equation}
+hoặc viết gọn dưới dạng ma trận:
+\begin{equation}
+    A^{(L)} = \mathrm{Softmax}\!\left(Z^{(L)}\right)
 \end{equation}
 
 \section{Lan truyền thuận (Forward Propagation)}
@@ -203,7 +248,7 @@ Quá trình lan truyền thuận gồm các bước:
     Z^{(l)} &= W^{(l)} A^{(l-1)} + b^{(l)} \\
     A^{(l)} &= f\left(Z^{(l)}\right)
 \end{align}
-\textit{Lưu ý: Các công thức (2.12) và (2.13) được trình bày dưới góc độ toán học cho một mẫu dữ liệu dạng vector cột. Khi triển khai thực tế bằng ma trận trên NumPy cho một batch gồm $N$ mẫu dữ liệu, phép toán sẽ được chuyển vị tương ứng thành $Z = AW + b$.}
+\textit{Lưu ý: Trong phần lý thuyết, các công thức được trình bày theo quy ước vector cột. Khi hiện thực bằng NumPy, mỗi hàng của ma trận tương ứng với một mẫu dữ liệu, do đó phép nhân được triển khai dưới dạng $Z = AW + b$. Hai cách biểu diễn là tương đương và chỉ khác nhau ở quy ước lưu trữ dữ liệu.}
 
 \textbf{Vai trò của Forward Propagation:} \\
 Forward Propagation là bước tạo ra kết quả dự đoán từ dữ liệu đầu vào và là cơ sở để tính hàm mất mát (Loss Function). Giá trị Loss sau đó được sử dụng trong Backpropagation để tính gradient và cập nhật trọng số của mạng. Hai quá trình này phối hợp trong mỗi vòng huấn luyện, giúp mô hình dần học được quy luật của dữ liệu và nâng cao độ chính xác dự đoán.
@@ -242,6 +287,7 @@ Gradient của trọng số và bias:
     \frac{\partial L}{\partial W^{(l)}} &= \delta^{(l)} (A^{(l-1)})^T \\
     \frac{\partial L}{\partial b^{(l)}} &= \delta^{(l)}
 \end{align}
+\textit{Lưu ý: Đối với huấn luyện theo mini-batch, gradient của bias được tính bằng tổng hoặc trung bình của $\delta^{(l)}$ trên toàn bộ batch.}
 
 \textbf{Cập nhật trọng số:}
 \begin{align}
