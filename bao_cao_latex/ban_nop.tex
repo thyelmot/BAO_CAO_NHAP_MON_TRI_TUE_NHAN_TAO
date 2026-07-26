@@ -291,7 +291,10 @@ Gradient của trọng số và bias:
     \frac{\partial \mathcal{L}}{\partial W^{(l)}} &= \delta^{(l)} (A^{(l-1)})^T \\
     \frac{\partial \mathcal{L}}{\partial b^{(l)}} &= \delta^{(l)}
 \end{align}
-\textit{Lưu ý: Đối với huấn luyện theo mini-batch, gradient của bias được tính bằng tổng hoặc trung bình của $\delta^{(l)}$ trên toàn bộ batch.}
+\textit{Lưu ý: Công thức (2.23) áp dụng cho trường hợp lan truyền ngược của một mẫu dữ liệu (single sample). Khi huấn luyện theo mini-batch gồm $N$ mẫu, gradient của bias được tính bằng tổng hoặc trung bình các vector sai số của toàn bộ batch:}
+\begin{equation}
+    \frac{\partial \mathcal{L}}{\partial b^{(l)}} = \frac{1}{N} \sum_{i=1}^N \delta_i^{(l)}
+\end{equation}
 
 \textbf{Cập nhật trọng số:}
 \begin{align}
