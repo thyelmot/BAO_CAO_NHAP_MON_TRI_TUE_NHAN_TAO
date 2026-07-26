@@ -26,7 +26,7 @@
     linkcolor=black,
     filecolor=magenta,      
     urlcolor=blue,
-    pdftitle={Báo cáo Đồ án AI},
+    pdftitle={Báo cáo Đề tài AI},
 }
 
 \begin{document}
@@ -483,7 +483,7 @@ Các thư viện sử dụng gồm:
 \chapter{KẾT LUẬN}
 
 \section{Những kết quả đã đạt được}
-Trong đồ án này, nhóm đã hoàn thành xuất sắc các mục tiêu đề ra ban đầu, bao gồm:
+Trong đề tài này, nhóm đã hoàn thành xuất sắc các mục tiêu đề ra ban đầu, bao gồm:
 \begin{itemize}
     \item \textbf{Cài đặt thành công mô hình từ đầu (scratch):} Xây dựng thành công mô hình Perceptron và Mạng nơ-ron nhiều lớp (MLP) hoàn toàn bằng thư viện toán học NumPy mà không phụ thuộc vào các framework học sâu có sẵn (như PyTorch hay TensorFlow).
     \item \textbf{Am hiểu sâu sắc cơ sở toán học:} Áp dụng chính xác các công thức toán học về Lan truyền thuận (Forward Propagation) và Lan truyền ngược (Backpropagation) sử dụng quy tắc đạo hàm dây chuyền (Chain Rule) trên hệ thống ma trận (Batch Matrix).
@@ -492,15 +492,15 @@ Trong đồ án này, nhóm đã hoàn thành xuất sắc các mục tiêu đ�
 \end{itemize}
 
 \section{Những mặt còn hạn chế}
-Mặc dù đã đạt được nhiều kết quả tích cực, mô hình và đồ án vẫn còn một số hạn chế nhất định:
+Mặc dù đã đạt được nhiều kết quả tích cực, mô hình và đề tài vẫn còn một số hạn chế nhất định:
 \begin{itemize}
     \item \textbf{Hiệu suất tính toán:} Việc tính toán ma trận hoàn toàn bằng CPU thông qua NumPy sẽ gặp trở ngại về tốc độ nếu mở rộng sang các tập dữ liệu kích thước lớn (như xử lý ảnh, văn bản), do chưa tận dụng được sức mạnh tính toán song song của GPU (CUDA).
-    \item \textbf{Thuật toán tối ưu:} Đồ án mới chỉ áp dụng SGD with Momentum. Trong thực tế, các kiến trúc Deep Learning hiện đại thường yêu cầu các thuật toán tối ưu tự thích ứng (Adaptive Learning Rate) như Adam hay RMSprop để hội tụ tốt hơn trên các không gian hao phí phức tạp.
+    \item \textbf{Thuật toán tối ưu:} Đề tài mới chỉ áp dụng SGD with Momentum. Trong thực tế, các kiến trúc Deep Learning hiện đại thường yêu cầu các thuật toán tối ưu tự thích ứng (Adaptive Learning Rate) như Adam hay RMSprop để hội tụ tốt hơn trên các không gian hao phí phức tạp.
     \item \textbf{Cơ chế dừng sớm (Early Stopping):} Quá trình huấn luyện hiện tại chạy cố định theo số vòng lặp (Epochs) được định trước. Nếu mô hình đã tìm được điểm tối ưu cục bộ sớm, việc tiếp tục tính toán gây lãng phí tài nguyên.
 \end{itemize}
 
 \section{Hướng phát triển trong tương lai}
-Từ những hạn chế trên, nhóm đề xuất các hướng phát triển tiếp theo cho đồ án:
+Từ những hạn chế trên, nhóm đề xuất các hướng phát triển tiếp theo cho đề tài:
 \begin{itemize}
     \item \textbf{Tích hợp thuật toán Adam:} Cài đặt bổ sung thuật toán Adam (Adaptive Moment Estimation) để tự động điều chỉnh tốc độ học cho từng tham số mạng, giúp quá trình hội tụ nhanh, ổn định và ít phụ thuộc vào việc điều chỉnh siêu tham số thủ công.
     \item \textbf{Phát triển cơ chế Early Stopping:} Lập trình module theo dõi độ đo trên tập Validation, tự động ngắt quá trình huấn luyện khi Validation Loss có dấu hiệu tăng trở lại (dấu hiệu của Overfitting), giúp tiết kiệm thời gian và tài nguyên.
