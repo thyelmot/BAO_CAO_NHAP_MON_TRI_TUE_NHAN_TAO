@@ -121,7 +121,7 @@ $\delta^{(l)}$ & Sai số lan truyền ngược của lớp thứ $l$ \\
 $\eta$ & Tốc độ học (Learning Rate) \\
 $\beta$ & Hệ số Momentum \\
 $\lambda$ & Hệ số L2 Regularization \\
-$L$ & Hàm mất mát (Loss Function) \\
+$\mathcal{L}$ & Hàm mất mát (Loss Function) \\
 $N$ & Số lượng mẫu dữ liệu \\
 $C$ & Số lượng lớp cần phân loại \\
 \hline
@@ -258,12 +258,12 @@ Hàm mất mát (Loss Function) là hàm toán học dùng để đo lường sa
 
 \textbf{Mean Squared Error (MSE):} Dùng cho bài toán hồi quy (tính trên $N$ mẫu dữ liệu).
 \begin{equation}
-    L = \frac{1}{N} \sum_{i=1}^N (y_i - \hat{y}_i)^2
+    \mathcal{L} = \frac{1}{N} \sum_{i=1}^N (y_i - \hat{y}_i)^2
 \end{equation}
 
 \textbf{Cross-Entropy Loss:} Dùng cho bài toán phân loại nhiều lớp (tính trên $N$ mẫu dữ liệu, mỗi mẫu có $C$ lớp).
 \begin{equation}
-    L = - \frac{1}{N} \sum_{i=1}^N \sum_{c=1}^C y_{ic} \log(\hat{y}_{ic})
+    \mathcal{L} = - \frac{1}{N} \sum_{i=1}^N \sum_{c=1}^C y_{ic} \log(\hat{y}_{ic})
 \end{equation}
 
 \textbf{Vai trò:} \\
@@ -274,7 +274,7 @@ Lan truyền ngược (Backpropagation) là thuật toán dùng để huấn luy
 
 \textbf{Quy tắc đạo hàm dây chuyền (Chain Rule):}
 \begin{equation}
-    \frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}
+    \frac{\partial \mathcal{L}}{\partial w} = \frac{\partial \mathcal{L}}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}
 \end{equation}
 
 \textbf{Tính Gradient:} \\
@@ -288,15 +288,15 @@ Sai số tại lớp ẩn được tính theo:
 \end{equation}
 Gradient của trọng số và bias:
 \begin{align}
-    \frac{\partial L}{\partial W^{(l)}} &= \delta^{(l)} (A^{(l-1)})^T \\
-    \frac{\partial L}{\partial b^{(l)}} &= \delta^{(l)}
+    \frac{\partial \mathcal{L}}{\partial W^{(l)}} &= \delta^{(l)} (A^{(l-1)})^T \\
+    \frac{\partial \mathcal{L}}{\partial b^{(l)}} &= \delta^{(l)}
 \end{align}
 \textit{Lưu ý: Đối với huấn luyện theo mini-batch, gradient của bias được tính bằng tổng hoặc trung bình của $\delta^{(l)}$ trên toàn bộ batch.}
 
 \textbf{Cập nhật trọng số:}
 \begin{align}
-    W^{(l)} &= W^{(l)} - \eta \frac{\partial L}{\partial W^{(l)}} \\
-    b^{(l)} &= b^{(l)} - \eta \frac{\partial L}{\partial b^{(l)}}
+    W^{(l)} &= W^{(l)} - \eta \frac{\partial \mathcal{L}}{\partial W^{(l)}} \\
+    b^{(l)} &= b^{(l)} - \eta \frac{\partial \mathcal{L}}{\partial b^{(l)}}
 \end{align}
 
 \section{Các thuật toán tối ưu (Optimization Algorithms)}
@@ -304,21 +304,21 @@ Thuật toán tối ưu (Optimization Algorithm) là phương pháp cập nhật
 
 \textbf{Gradient Descent (GD):}
 \begin{align}
-    W^{(l)} &= W^{(l)} - \eta \frac{\partial L}{\partial W^{(l)}} \\
-    b^{(l)} &= b^{(l)} - \eta \frac{\partial L}{\partial b^{(l)}}
+    W^{(l)} &= W^{(l)} - \eta \frac{\partial \mathcal{L}}{\partial W^{(l)}} \\
+    b^{(l)} &= b^{(l)} - \eta \frac{\partial \mathcal{L}}{\partial b^{(l)}}
 \end{align}
 
 \textbf{Stochastic Gradient Descent (SGD):}
 \begin{align}
-    W^{(l)} &= W^{(l)} - \eta \frac{\partial L_i}{\partial W^{(l)}} \\
-    b^{(l)} &= b^{(l)} - \eta \frac{\partial L_i}{\partial b^{(l)}}
+    W^{(l)} &= W^{(l)} - \eta \frac{\partial \mathcal{L}_i}{\partial W^{(l)}} \\
+    b^{(l)} &= b^{(l)} - \eta \frac{\partial \mathcal{L}_i}{\partial b^{(l)}}
 \end{align}
 
 \textbf{SGD with Momentum:}
 \begin{align}
-    v_t^{W^{(l)}} &= \beta v_{t-1}^{W^{(l)}} - \eta \frac{\partial L}{\partial W^{(l)}} \\
+    v_t^{W^{(l)}} &= \beta v_{t-1}^{W^{(l)}} - \eta \frac{\partial \mathcal{L}}{\partial W^{(l)}} \\
     W^{(l)} &= W^{(l)} + v_t^{W^{(l)}} \\
-    v_t^{b^{(l)}} &= \beta v_{t-1}^{b^{(l)}} - \eta \frac{\partial L}{\partial b^{(l)}} \\
+    v_t^{b^{(l)}} &= \beta v_{t-1}^{b^{(l)}} - \eta \frac{\partial \mathcal{L}}{\partial b^{(l)}} \\
     b^{(l)} &= b^{(l)} + v_t^{b^{(l)}}
 \end{align}
 Trong đó, $\beta$ là hệ số Momentum (thường khoảng 0.9).
@@ -326,12 +326,12 @@ Trong đó, $\beta$ là hệ số Momentum (thường khoảng 0.9).
 \section{Regularization L2}
 L2 Regularization (Weight Decay) giúp giảm hiện tượng overfitting bằng cách thêm một thành phần phạt vào hàm mất mát.
 \begin{equation}
-    L' = L + \frac{\lambda}{2N} \sum_{l=1}^L ||W^{(l)}||_F^2
+    \mathcal{L}' = \mathcal{L} + \frac{\lambda}{2N} \sum_{l=1}^L ||W^{(l)}||_F^2
 \end{equation}
 Gradient và cập nhật trọng số sau khi thêm L2 (chỉ áp dụng cho trọng số, không áp dụng cho bias):
 \begin{align}
-    \frac{\partial L'}{\partial W^{(l)}} &= \frac{\partial L}{\partial W^{(l)}} + \frac{\lambda}{N} W^{(l)} \\
-    W^{(l)} &= W^{(l)} - \eta \left( \frac{\partial L}{\partial W^{(l)}} + \frac{\lambda}{N} W^{(l)} \right)
+    \frac{\partial \mathcal{L}'}{\partial W^{(l)}} &= \frac{\partial \mathcal{L}}{\partial W^{(l)}} + \frac{\lambda}{N} W^{(l)} \\
+    W^{(l)} &= W^{(l)} - \eta \left( \frac{\partial \mathcal{L}}{\partial W^{(l)}} + \frac{\lambda}{N} W^{(l)} \right)
 \end{align}
 
 
