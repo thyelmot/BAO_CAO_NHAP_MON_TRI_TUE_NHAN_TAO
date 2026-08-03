@@ -7,6 +7,8 @@
 \usepackage{geometry}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{calc}
 
 % --- THƯ VIỆN ÉP KHOẢNG TRẮNG ---
 \usepackage{titlesec}
@@ -18,7 +20,7 @@
 \titlespacing*{\subsection}{0pt}{10pt}{5pt} 
 
 % Cấu hình margin
-\geometry{a4paper, margin=2cm}
+\geometry{a4paper, left=3cm, right=2cm, top=2cm, bottom=2cm}
 
 % Cấu hình link
 \hypersetup{
@@ -33,16 +35,23 @@
 
 % ================= TRANG BÌA =================
 \begin{titlepage}
+    \begin{tikzpicture}[remember picture, overlay]
+        % Khung ngoài
+        \draw[line width = 2pt] ($(current page.north west) + (2.2cm,-1.2cm)$) rectangle ($(current page.south east) + (-1.2cm,1.2cm)$);
+        % Khung trong
+        \draw[line width = 0.5pt] ($(current page.north west) + (2.3cm,-1.3cm)$) rectangle ($(current page.south east) + (-1.3cm,1.3cm)$);
+    \end{tikzpicture}
     \centering
     \vspace*{0.5cm}
-    \Large \textbf{ĐẠI HỌC PHENIKAA} \\
-    \Large \textbf{TRƯỜNG CÔNG NGHỆ THÔNG TIN PHENIKAA} \\
+    \large \textbf{BỘ GIÁO DỤC VÀ ĐÀO TẠO} \\
+    \large \textbf{ĐẠI HỌC PHENIKAA} \\
+    \large \textbf{TRƯỜNG CÔNG NGHỆ THÔNG TIN PHENIKAA} \\
     \vspace{1.5cm}
     \includegraphics[width=0.4\textwidth]{logoo.jpg} 
     \vspace{1.5cm} \\
-    \Large \textbf{TÊN HỌC PHẦN: NHẬP MÔN TRÍ TUỆ NHÂN TẠO} \\
+    \large \textbf{TÊN HỌC PHẦN: NHẬP MÔN TRÍ TUỆ NHÂN TẠO} \\
     \vspace{0.5cm}
-    \Large \textbf{TÊN ĐỀ TÀI: CÀI ĐẶT PERCEPTRON VÀ MẠNG NƠ-RON NHIỀU LỚP (MLP) TỪ ĐẦU BẰNG NUMPY} \\
+    \large \textbf{TÊN ĐỀ TÀI: CÀI ĐẶT PERCEPTRON VÀ MẠNG NƠ-RON NHIỀU LỚP (MLP) TỪ ĐẦU BẰNG NUMPY} \\
     \vspace{1.5cm}
     \begin{flushleft}
         \textbf{Giảng viên hướng dẫn:} ThS. Phan Thị Hoài \\
