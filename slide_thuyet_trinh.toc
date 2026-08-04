@@ -1,0 +1,4 @@
+\babel@toc {vietnamese}{}\relax 
+\beamer@sectionintoc {1}{Cơ sở lý thuyết}{3}{0}{1}
+\beamer@sectionintoc {2}{Kết quả thực nghiệm}{15}{0}{2}
+\beamer@sectionintoc {3}{Thực nghiệm mở rộng}{19}{0}{3}
